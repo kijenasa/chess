@@ -1,33 +1,29 @@
 package com.kijenasa.chess.game;
 
+import com.github.bhlangonijr.chesslib.*;
+
 import java.time.Duration;
 import java.time.Instant;
 
 public class Game {
     private Long id;
-    private Turn turn;
     private Duration duration;
     private Instant startTime;
+    private Board board;
 
     public Game() {}
 
-    public Game(Long id, Turn turn, Duration duration, Instant startTime) {
+    public Game(Long id, Turn turn, Duration duration, Instant startTime, Board board) {
         this.id = id;
-        this.turn = turn;
         this.duration = duration;
         this.startTime = startTime;
-    }
-
-    public Game(Turn turn, Duration duration, Instant startTime) {
-        this.turn = turn;
-        this.duration = duration;
-        this.startTime = startTime;
+        this.board = board;
     }
 
     public Game(Duration duration, Instant startTime) {
-        this.turn = Turn.White;
         this.duration = duration;
         this.startTime = startTime;
+        this.board = new Board();
     }
 
     public Long getId() {
@@ -36,14 +32,6 @@ public class Game {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Turn getTurn() {
-        return turn;
-    }
-
-    public void setTurn(Turn turn) {
-        this.turn = turn;
     }
 
     public Duration getDuration() {
@@ -62,13 +50,21 @@ public class Game {
         this.startTime = startTime;
     }
 
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
                 "id=" + id +
-                ", turn=" + turn +
                 ", duration=" + duration +
                 ", startTime=" + startTime +
+                ", board=" + board.getFen() +
                 '}';
     }
 }
