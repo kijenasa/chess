@@ -3,6 +3,10 @@ package com.kijenasa.chess.game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.bhlangonijr.chesslib.*;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.util.UUID;
 
 @Entity
@@ -18,8 +22,10 @@ public class Game {
             strategy = GenerationType.SEQUENCE,
             generator = "game_sequence"
     )
-    private Long id;
+    private Long id; // todo: get rid of
     @JsonIgnore
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 100)
     private UUID uuid;
     private Board board;
 
@@ -28,14 +34,13 @@ public class Game {
         uuid = UUID.randomUUID();
     }
 
-    public Game(Long id, Board board) {
-        this.id = id;
+    public Game(UUID uuid, Board board) {
+        this.uuid = uuid;
         this.board = board;
-        uuid = UUID.randomUUID();
     }
 
     public Game(Board board) {
-        this.board = new Board();
+        this.board = board;
         uuid = UUID.randomUUID();
     }
 
