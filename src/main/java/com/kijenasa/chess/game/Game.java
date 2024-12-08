@@ -1,29 +1,44 @@
 package com.kijenasa.chess.game;
 
 import com.github.bhlangonijr.chesslib.*;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 
+@Entity
+@Table
 public class Game {
+    @Id
+    @SequenceGenerator(
+            name = "game_sequence",
+            sequenceName = "game_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "game_sequence"
+    )
     private Long id;
-    private Duration duration;
-    private Instant startTime;
+    private UUID uuid;
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 100)
     private Board board;
 
     public Game() {}
 
-    public Game(Long id, Duration duration, Instant startTime, Board board) {
+    public Game(Long id, Board board) {
         this.id = id;
-        this.duration = duration;
-        this.startTime = startTime;
         this.board = board;
+        uuid = UUID.randomUUID();
     }
 
-    public Game(Duration duration, Instant startTime) {
-        this.duration = duration;
-        this.startTime = startTime;
+    public Game(Board board) {
         this.board = new Board();
+        uuid = UUID.randomUUID();
     }
 
     public Long getId() {
@@ -34,20 +49,12 @@ public class Game {
         this.id = id;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public UUID getUuid() {
+        return uuid;
     }
 
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
-    public Instant getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Board getBoard() {
@@ -62,9 +69,8 @@ public class Game {
     public String toString() {
         return "Game{" +
                 "id=" + id +
-                ", duration=" + duration +
-                ", startTime=" + startTime +
-                ", board=" + board.getFen() +
+                "uuid=" + uuid +
+                ", fen=" + board.getFen() +
                 '}';
     }
 }

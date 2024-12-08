@@ -1,5 +1,6 @@
 package com.kijenasa.chess.game;
 
+import com.github.bhlangonijr.chesslib.Board;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -11,8 +12,7 @@ public class GameService {
 
     public List<Game> getGame() {
         return List.of(new Game(
-                Duration.ofMinutes(15),
-                Instant.now()
+                new Board()
         ));
     }
 }
