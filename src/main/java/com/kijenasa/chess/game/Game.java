@@ -19,7 +19,6 @@ public class Game {
             generator = "game_sequence"
     )
     private Long id;
-    @Transient
     @JsonIgnore
     private UUID uuid;
     private Board board;
