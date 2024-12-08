@@ -20,11 +20,6 @@ public class GameController {
         this.gameService = gameService;
     }
 
-//    @GetMapping("/id/{id}")
-//    public Optional<Game> getGame(@PathVariable long id) {
-//        return gameService.getGameById(id);
-//    }
-
     @GetMapping("/{uuid}")
     public Optional<Game> getId(@PathVariable UUID uuid) {
         return gameService.getGameByUuid(uuid);
