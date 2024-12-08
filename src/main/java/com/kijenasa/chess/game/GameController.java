@@ -1,11 +1,14 @@
 package com.kijenasa.chess.game;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -25,8 +28,14 @@ public class GameController {
     }
 
     @PostMapping
-    public void createGame() {
-        gameService.addNewGame(new Game());
+    public ResponseEntity<Void> createGame() {
+        Game game = new Game();
+        String redirect = "/game/" + game.getUuid().toString();
+        gameService.addNewGame(game);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .location(URI.create(redirect))
+                .build();
     }
 }
 
