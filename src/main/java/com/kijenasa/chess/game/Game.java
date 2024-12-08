@@ -1,5 +1,6 @@
 package com.kijenasa.chess.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.bhlangonijr.chesslib.*;
 import jakarta.persistence.*;
 import java.util.UUID;
@@ -18,6 +19,8 @@ public class Game {
             generator = "game_sequence"
     )
     private Long id;
+    @Transient
+    @JsonIgnore
     private UUID uuid;
     private Board board;
 
@@ -65,7 +68,6 @@ public class Game {
     public String toString() {
         return "Game{" +
                 "id=" + id +
-                "uuid=" + uuid +
                 ", fen=" + board.getFen() +
                 '}';
     }
