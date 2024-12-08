@@ -2,11 +2,6 @@ package com.kijenasa.chess.game;
 
 import com.github.bhlangonijr.chesslib.*;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
-import java.time.Duration;
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -24,8 +19,6 @@ public class Game {
     )
     private Long id;
     private UUID uuid;
-    @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 100)
     private Board board;
 
     public Game() {}
