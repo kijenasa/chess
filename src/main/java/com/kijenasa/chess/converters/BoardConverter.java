@@ -1,4 +1,4 @@
-package com.kijenasa.chess.game.converters;
+package com.kijenasa.chess.converters;
 
 import com.github.bhlangonijr.chesslib.Board;
 import jakarta.persistence.AttributeConverter;
