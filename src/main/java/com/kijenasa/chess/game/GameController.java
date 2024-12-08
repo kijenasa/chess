@@ -2,6 +2,7 @@ package com.kijenasa.chess.game;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,4 +25,10 @@ public class GameController {
     public List<Game> getGame() {
         return gameService.getGame();
     }
+
+    @PostMapping
+    public void createGame() {
+        gameService.addNewgame(new Game());
+    }
 }
+

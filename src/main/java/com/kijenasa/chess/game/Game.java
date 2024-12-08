@@ -21,7 +21,10 @@ public class Game {
     private UUID uuid;
     private Board board;
 
-    public Game() {}
+    public Game() {
+        board = new Board();
+        uuid = UUID.randomUUID();
+    }
 
     public Game(Long id, Board board) {
         this.id = id;
