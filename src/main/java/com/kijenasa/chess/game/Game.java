@@ -3,7 +3,6 @@ package com.kijenasa.chess.game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.bhlangonijr.chesslib.*;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 

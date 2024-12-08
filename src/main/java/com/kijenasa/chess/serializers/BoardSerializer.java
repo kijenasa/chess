@@ -1,13 +1,9 @@
 package com.kijenasa.chess.serializers;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.*;
 import com.github.bhlangonijr.chesslib.Board;
 import org.springframework.boot.jackson.JsonComponent;
-import org.springframework.boot.json.JsonParser;
-
 import java.io.IOException;
 
 @JsonComponent
