@@ -13,7 +13,7 @@ public class Game {
 
     public Game() {}
 
-    public Game(Long id, Turn turn, Duration duration, Instant startTime, Board board) {
+    public Game(Long id, Duration duration, Instant startTime, Board board) {
         this.id = id;
         this.duration = duration;
         this.startTime = startTime;
