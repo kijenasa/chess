@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -28,7 +26,7 @@ public class GameController {
 
     @PostMapping
     public void createGame() {
-        gameService.addNewgame(new Game());
+        gameService.addNewGame(new Game());
     }
 }
 

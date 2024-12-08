@@ -1,10 +1,7 @@
 package com.kijenasa.chess.game;
 
-import com.github.bhlangonijr.chesslib.Board;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -20,7 +17,7 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public void addNewgame(Game game) {
-        System.out.println(game.toString());
+    public void addNewGame(Game game) {
+        gameRepository.save(game);
     }
 }
