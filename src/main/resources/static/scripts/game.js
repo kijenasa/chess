@@ -3,11 +3,13 @@ var game = new Chess()
 var whiteSquareGrey = '#a9a9a9'
 var blackSquareGrey = '#696969'
 
-function removeGreySquares () {
+var side = 'w'
+
+function removeGreySquares() {
   $('#myBoard .square-55d63').css('background', '')
 }
 
-function greySquare (square) {
+function greySquare(square) {
   var $square = $('#myBoard .square-' + square)
 
   var background = whiteSquareGrey
@@ -18,18 +20,17 @@ function greySquare (square) {
   $square.css('background', background)
 }
 
-function onDragStart (source, piece) {
+function onDragStart(source, piece) {
   // do not pick up pieces if the game is over
-  if (game.game_over()) return false
+  if(game.game_over()) return false
 
-  // or if it's not that side's turn
-  if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-      (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+  // or if it's not the players turn
+  if((side === 'w' && piece.search(/^b/) !== -1) || (side === 'b' && piece.search(/^w/) !== -1)) {
     return false
   }
 }
 
-function onDrop (source, target) {
+function onDrop(source, target) {
   removeGreySquares()
 
   // see if the move is legal
@@ -43,7 +44,11 @@ function onDrop (source, target) {
   if (move === null) return 'snapback'
 }
 
-function onMouseoverSquare (square, piece) {
+function onMouseoverSquare(square, piece) {
+  if((side === 'w' && piece.search(/^b/) !== -1) || (side === 'b' && piece.search(/^w/) !== -1)) {
+    return false
+  }
+
   // get list of possible moves for this square
   var moves = game.moves({
     square: square,
@@ -51,22 +56,22 @@ function onMouseoverSquare (square, piece) {
   })
 
   // exit if there are no moves available for this square
-  if (moves.length === 0) return
+  if(moves.length === 0) return
 
   // highlight the square they moused over
   greySquare(square)
 
   // highlight the possible squares for this piece
-  for (var i = 0; i < moves.length; i++) {
+  for(var i = 0; i < moves.length; i++) {
     greySquare(moves[i].to)
   }
 }
 
-function onMouseoutSquare (square, piece) {
+function onMouseoutSquare(square, piece) {
   removeGreySquares()
 }
 
-function onSnapEnd () {
+function onSnapEnd() {
   board.position(game.fen())
 }
 
