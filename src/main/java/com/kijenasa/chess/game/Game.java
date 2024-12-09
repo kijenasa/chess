@@ -2,6 +2,8 @@ package com.kijenasa.chess.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.bhlangonijr.chesslib.*;
+import com.github.bhlangonijr.chesslib.move.Move;
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -27,10 +29,12 @@ public class Game {
     @Column(length = 100)
     private UUID uuid;
     private Board board;
+    private Move recentMove;
 
     public Game() {
         board = new Board();
         uuid = UUID.randomUUID();
+        recentMove = new Move(Square.E2, Square.E4);
     }
 
     public Game(UUID uuid, Board board) {
@@ -67,11 +71,20 @@ public class Game {
         this.board = board;
     }
 
+    public Move getMove() {
+        return recentMove;
+    }
+
+    public void setMove(Move move) {
+        this.recentMove = move;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
                 "id=" + id +
                 ", fen=" + board.getFen() +
+                ", recentMove=" + recentMove.toString() +
                 '}';
     }
 }
