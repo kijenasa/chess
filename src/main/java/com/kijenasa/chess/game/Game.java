@@ -1,9 +1,12 @@
 package com.kijenasa.chess.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.github.bhlangonijr.chesslib.*;
 import com.github.bhlangonijr.chesslib.move.Move;
 
+import com.kijenasa.chess.Move.MoveDeserializer;
+import com.kijenasa.chess.Move.MoveWrapper;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -29,12 +32,13 @@ public class Game {
     @Column(length = 100)
     private UUID uuid;
     private Board board;
-    private Move recentMove;
+    @JsonDeserialize(using = MoveDeserializer.class)
+    private MoveWrapper recentMove;
 
     public Game() {
         board = new Board();
         uuid = UUID.randomUUID();
-        recentMove = new Move(Square.E2, Square.E4);
+        recentMove = new MoveWrapper(Square.E2, Square.E4);
     }
 
     public Game(UUID uuid, Board board) {
@@ -71,11 +75,11 @@ public class Game {
         this.board = board;
     }
 
-    public Move getMove() {
+    public MoveWrapper getMove() {
         return recentMove;
     }
 
-    public void setMove(Move move) {
+    public void setMove(MoveWrapper move) {
         this.recentMove = move;
     }
 
