@@ -46,7 +46,7 @@ public class Game {
     public Game() {
         board = new Board();
         uuid = UUID.randomUUID();
-        recentMove = new MoveWrapper(Square.E2, Square.E4);
+        recentMove = new MoveWrapper(Square.NONE, Square.NONE);
     }
 
     public Game(UUID uuid, Board board) {
