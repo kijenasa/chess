@@ -1,6 +1,7 @@
 package com.kijenasa.chess.game;
 
 import com.github.bhlangonijr.chesslib.Side;
+import com.kijenasa.chess.Move.MoveWrapper;
 import com.kijenasa.chess.Player.Player;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,17 @@ public class GameService {
 
     public void addNewGame(Game game) {
         gameRepository.save(game);
+    }
+
+    public boolean move(UUID gameUuid, MoveWrapper move) {
+        if(getGameByUuid(gameUuid).isEmpty()) {
+            return false;
+        }
+        Game game = getGameByUuid(gameUuid).get();
+
+        game.setMove(move);
+        gameRepository.save(game);
+        return true;
     }
 
     public Optional<Side> getSideByUuid(UUID gameUuid, UUID playerUuid) {
