@@ -1,5 +1,8 @@
 package com.kijenasa.chess.game;
 
+import com.github.bhlangonijr.chesslib.Side;
+import com.github.bhlangonijr.chesslib.move.Move;
+import com.kijenasa.chess.Player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,17 @@ public class GameController {
     @GetMapping("/{uuid}")
     public Optional<Game> getId(@PathVariable UUID uuid) {
         return gameService.getGameByUuid(uuid);
+    }
+
+    @PostMapping("/{gameUuid}")
+    @ResponseBody
+    public void makeMove(@PathVariable UUID gameUuid, @RequestParam UUID playerUuid) { // TODO: take in the move as a request param :p
+        System.out.println("move");
+    }
+
+    @PostMapping("/{gameUuid}/join")
+    public Optional<Player> joinGame(@PathVariable UUID gameUuid) {
+        return gameService.joinGame(gameUuid);
     }
 
     @PostMapping

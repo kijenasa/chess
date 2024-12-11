@@ -3,12 +3,14 @@ package com.kijenasa.chess.game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.github.bhlangonijr.chesslib.*;
-import com.github.bhlangonijr.chesslib.move.Move;
 
 import com.kijenasa.chess.Move.MoveDeserializer;
 import com.kijenasa.chess.Move.MoveWrapper;
+import com.kijenasa.chess.Player.Player;
+import com.kijenasa.chess.Player.PlayerDeserializer;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
@@ -34,6 +36,12 @@ public class Game {
     private Board board;
     @JsonDeserialize(using = MoveDeserializer.class)
     private MoveWrapper recentMove;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @JsonDeserialize(using = PlayerDeserializer.class)
+    private Player white;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @JsonDeserialize(using = PlayerDeserializer.class)
+    private Player black;
 
     public Game() {
         board = new Board();
@@ -83,12 +91,31 @@ public class Game {
         this.recentMove = move;
     }
 
+    public Player getWhite() {
+        return white;
+    }
+
+    public void setWhite(Player white) {
+        this.white = white;
+    }
+
+    public Player getBlack() {
+        return black;
+    }
+
+    public void setBlack(Player black) {
+        this.black = black;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
                 "id=" + id +
-                ", fen=" + board.getFen() +
-                ", recentMove=" + recentMove.toString() +
+                ", uuid=" + uuid +
+                ", board=" + board +
+                ", recentMove=" + recentMove +
+                ", whiteUuid=" + white +
+                ", blackUuid=" + black +
                 '}';
     }
 }
