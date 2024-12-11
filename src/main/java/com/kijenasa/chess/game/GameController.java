@@ -1,7 +1,6 @@
 package com.kijenasa.chess.game;
 
-import com.github.bhlangonijr.chesslib.Side;
-import com.github.bhlangonijr.chesslib.move.Move;
+import com.kijenasa.chess.Move.MoveWrapper;
 import com.kijenasa.chess.Player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,10 +27,13 @@ public class GameController {
         return gameService.getGameByUuid(uuid);
     }
 
-    @PostMapping("/{gameUuid}")
+    @PostMapping("/{gameUuid}/move/{playerUuid}")
     @ResponseBody
-    public void makeMove(@PathVariable UUID gameUuid, @RequestParam UUID playerUuid) { // TODO: take in the move as a request param :p
-        System.out.println("move");
+    public boolean makeMove(@PathVariable UUID gameUuid, @PathVariable UUID playerUuid, @RequestBody MoveWrapper move) {
+        // TODO player verification logic & move legality checking in the gameService
+        System.out.println(move.getMove().toString());
+        gameService.move(gameUuid, move);
+        return true;
     }
 
     @PostMapping("/{gameUuid}/join")
