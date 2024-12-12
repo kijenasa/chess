@@ -1,9 +1,45 @@
-var board = null
-var game = new Chess()
-var whiteSquareGrey = '#a9a9a9'
-var blackSquareGrey = '#696969'
+var board = null;
+var game = new Chess();
+var whiteSquareGrey = '#a9a9a9';
+var blackSquareGrey = '#696969';
 
-var side = 'w'
+var gameUrl = window.location.pathname;
+var apiUrl = "/api/game/";
+
+var side;
+var uuid;
+
+function sendPost(url, data) {
+  return new Promise ((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          resolve(xhr.responseText);
+        }
+    };
+    xhr.send(JSON.stringify(data));
+  })
+}
+
+sendPost(apiUrl + gameUrl.split('/')[2] + "/join", null)
+  .then(response => {
+    if(response === null) {
+      config.log("Game is full");
+    } else {
+      responseJson = JSON.parse(response)
+      uuid = responseJson.uuid;
+      if (responseJson.side === "WHITE") {
+        side = 'w';
+      } else if (responseJson.side === "BLACK") {
+        side = 'b';
+      }
+      console.log(uuid);
+      console.log(side);
+    }
+  })
 
 function removeGreySquares() {
   $('#myBoard .square-55d63').css('background', '')
@@ -84,21 +120,13 @@ var config = {
   onMouseoverSquare: onMouseoverSquare,
   onSnapEnd: onSnapEnd,
   pieceTheme: '/img/chesspieces/wikipedia/{piece}.png'
-}
+};
 
-function sendPost(url, data, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", url);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+//http://localhost:8080/game/xxx
+//http://localhost:8080/api/game/xxx/join
 
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 201) {
-            callback(xhr);
-        }
-    };
 
-    xhr.send(JSON.stringify(data));
-}
+
 
 document.addEventListener("DOMContentLoaded", function() {
     board = Chessboard('myBoard', config)
