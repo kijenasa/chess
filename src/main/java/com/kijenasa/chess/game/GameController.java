@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,13 +29,18 @@ public class GameController {
         return gameService.getGameByUuid(uuid);
     }
 
-    @PostMapping("/{gameUuid}/move/{playerUuid}")
+    @PostMapping("/{gameUuid}/move")
     @ResponseBody
-    public boolean makeMove(@PathVariable UUID gameUuid, @PathVariable UUID playerUuid, @RequestBody MoveWrapper move) {
+    public boolean makeMove(@PathVariable UUID gameUuid, @RequestParam UUID playerUuid, @RequestBody MoveWrapper move) {
         // TODO player verification logic & move legality checking in the gameService
         System.out.println(move.getMove().toString());
         gameService.move(gameUuid, move);
         return true;
+    }
+
+    @GetMapping("/{gameUuid}/events")
+    public Flux<String> gameEvents(@PathVariable UUID gameUuid) {
+        return gameService.getSink(gameUuid).asFlux();
     }
 
     @PostMapping("/{gameUuid}/join")

@@ -27,6 +27,7 @@ dependencies {
 	implementation("com.github.bhlangonijr:chesslib:1.3.4")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.4.0")
+	implementation("io.projectreactor:reactor-core:3.7.1")
 }
 
 tasks.withType<Test> {

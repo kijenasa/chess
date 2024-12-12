@@ -4,6 +4,7 @@ import com.github.bhlangonijr.chesslib.Board;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 

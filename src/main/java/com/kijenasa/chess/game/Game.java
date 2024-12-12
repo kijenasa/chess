@@ -10,7 +10,6 @@ import com.kijenasa.chess.Player.Player;
 import com.kijenasa.chess.Player.PlayerDeserializer;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
@@ -38,9 +37,11 @@ public class Game {
     private MoveWrapper recentMove;
     @JdbcTypeCode(SqlTypes.JSON)
     @JsonDeserialize(using = PlayerDeserializer.class)
+    @JsonIgnore
     private Player white;
     @JdbcTypeCode(SqlTypes.JSON)
     @JsonDeserialize(using = PlayerDeserializer.class)
+    @JsonIgnore
     private Player black;
 
     public Game() {

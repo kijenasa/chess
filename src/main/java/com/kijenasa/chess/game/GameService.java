@@ -4,18 +4,25 @@ import com.github.bhlangonijr.chesslib.Side;
 import com.kijenasa.chess.Move.MoveWrapper;
 import com.kijenasa.chess.Player.Player;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Sinks;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final ConcurrentHashMap<String, Sinks.Many<String>> sinks = new ConcurrentHashMap<>();
 
     public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
+    }
+
+    public Sinks.Many<String> getSink(UUID gameUuid) {
+        return sinks.computeIfAbsent(gameUuid.toString(), k -> Sinks.many().multicast().directAllOrNothing());
     }
 
     public List<Game> getGames() {
@@ -34,6 +41,14 @@ public class GameService {
         gameRepository.save(game);
     }
 
+    public void broadcastMove(UUID gameUuid, MoveWrapper move) {
+        if(getGameByUuid(gameUuid).isPresent()) {
+            Game game = getGameByUuid(gameUuid).get();
+
+            getSink(gameUuid).tryEmitNext(move.toString());
+        }
+    }
+
     public boolean move(UUID gameUuid, MoveWrapper move) {
         if(getGameByUuid(gameUuid).isEmpty()) {
             return false;
@@ -42,6 +57,7 @@ public class GameService {
 
         game.setMove(move);
         gameRepository.save(game);
+        broadcastMove(gameUuid, move);
         return true;
     }
 

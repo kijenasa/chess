@@ -38,4 +38,12 @@ public class MoveWrapper {
     public Move getMove() {
         return new Move(from, to);
     }
+
+    @Override
+    public String toString() {
+        return "MoveWrapper{" +
+                "from=" + from +
+                ", to=" + to +
+                '}';
+    }
 }
