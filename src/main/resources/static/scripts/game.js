@@ -125,8 +125,11 @@ var config = {
 //http://localhost:8080/game/xxx
 //http://localhost:8080/api/game/xxx/join
 
+const evtSource = new EventSource(apiUrl + gameUrl.split('/')[2] + "/events");
 
-
+evtSource.onmessage = (event) => {
+  console.log(event.data);
+};
 
 document.addEventListener("DOMContentLoaded", function() {
     board = Chessboard('myBoard', config)
