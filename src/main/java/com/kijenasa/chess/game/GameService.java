@@ -41,24 +41,29 @@ public class GameService {
         gameRepository.save(game);
     }
 
-    public void broadcastMove(UUID gameUuid, MoveWrapper move) {
+    public void broadcastPosition(UUID gameUuid) {
         if(getGameByUuid(gameUuid).isPresent()) {
             Game game = getGameByUuid(gameUuid).get();
 
-            getSink(gameUuid).tryEmitNext(move.toString());
+            getSink(gameUuid).tryEmitNext(game.getBoard().getFen());
         }
     }
 
-    public boolean move(UUID gameUuid, MoveWrapper move) {
+    public boolean move(UUID gameUuid, UUID playerUuid, MoveWrapper move) {
         if(getGameByUuid(gameUuid).isEmpty()) {
             return false;
         }
-        Game game = getGameByUuid(gameUuid).get();
 
-        game.setMove(move);
-        gameRepository.save(game);
-        broadcastMove(gameUuid, move);
-        return true;
+        Game game = getGameByUuid(gameUuid).get();
+        // If move is legal AND player exists AND its players turn
+        if(game.getBoard().isMoveLegal(move.getMove(), true) && getSideByUuid(gameUuid, playerUuid).isPresent() && game.getBoard().getSideToMove().equals(getSideByUuid(gameUuid, playerUuid).get())) {
+            game.getBoard().doMove(move.getMove());
+            game.setMove(move);
+            gameRepository.save(game);
+            broadcastPosition(gameUuid);
+            return true;
+        }
+        return false;
     }
 
     public Optional<Side> getSideByUuid(UUID gameUuid, UUID playerUuid) {
@@ -66,11 +71,12 @@ public class GameService {
             return Optional.empty();
         }
         Game game = getGameByUuid(gameUuid).get();
-        if(game.getWhite().getUuid() == playerUuid) {
+        if(game.getWhite().getUuid().equals(playerUuid)) {
             return Optional.of(Side.WHITE);
-        } else if(game.getBlack().getUuid() == playerUuid) {
+        } else if(game.getBlack().getUuid().equals(playerUuid)) {
             return Optional.of(Side.BLACK);
         }
+
         return Optional.empty();
     }
 

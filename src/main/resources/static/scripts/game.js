@@ -24,22 +24,37 @@ function sendPost(url, data) {
   })
 }
 
+function sendGet(url) {
+    console.log("sending get to: " + url)
+    return new Promise ((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                resolve(xhr.responseText);
+            }
+        };
+        xhr.send();
+    })
+}
+
 sendPost(apiUrl + gameUrl.split('/')[2] + "/join", null)
-  .then(response => {
+    .then(response => {
     if(response === null) {
-      config.log("Game is full");
+        config.log("Game is full");
     } else {
-      responseJson = JSON.parse(response)
-      uuid = responseJson.uuid;
-      if (responseJson.side === "WHITE") {
-        side = 'w';
-      } else if (responseJson.side === "BLACK") {
-        side = 'b';
-      }
-      console.log(uuid);
-      console.log(side);
-    }
-  })
+        responseJson = JSON.parse(response);
+        uuid = responseJson.uuid;
+        if (responseJson.side === "WHITE") {
+            side = 'w';
+        } else if (responseJson.side === "BLACK") {
+            side = 'b';
+        }
+        console.log(uuid);
+        console.log(side);
+        }
+    })
 
 function removeGreySquares() {
   $('#myBoard .square-55d63').css('background', '')
@@ -67,17 +82,34 @@ function onDragStart(source, piece) {
 }
 
 function onDrop(source, target) {
-  removeGreySquares()
+    removeGreySquares()
 
-  // see if the move is legal
-  var move = game.move({
-    from: source,
-    to: target,
-    promotion: 'q' // NOTE: always promote to a queen for example simplicity
-  })
+    // see if the move is legal
+    var move = game.move({
+        from: source,
+        to: target,
+        promotion: 'q' // NOTE: always promote to a queen for example simplicity
+    })
+    console.log("moved " + move);
 
-  // illegal move
-  if (move === null) return 'snapback'
+    if(move) {
+        var result = {
+            from: move.from.toUpperCase(),
+            to: move.to.toUpperCase()
+        };
+
+        sendPost(apiUrl + gameUrl.split('/')[2] + "/move?playerUuid=" + uuid, result)
+        .then(response => {
+
+            console.log("sending move " + move + " to " + apiUrl + gameUrl.split('/')[2] + "/move")
+            if(response === false) {
+                return 'snapback'
+            }
+        })
+    }
+
+    // illegal move
+    if (move === null) return 'snapback'
 }
 
 function onMouseoverSquare(square, piece) {
@@ -111,26 +143,24 @@ function onSnapEnd() {
   board.position(game.fen())
 }
 
-var config = {
-  draggable: true,
-  position: 'start',
-  onDragStart: onDragStart,
-  onDrop: onDrop,
-  onMouseoutSquare: onMouseoutSquare,
-  onMouseoverSquare: onMouseoverSquare,
-  onSnapEnd: onSnapEnd,
-  pieceTheme: '/img/chesspieces/wikipedia/{piece}.png'
-};
-
-//http://localhost:8080/game/xxx
-//http://localhost:8080/api/game/xxx/join
+document.addEventListener("DOMContentLoaded", function() {
+    var config = {
+        draggable: true,
+        position: fen,
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onMouseoutSquare: onMouseoutSquare,
+        onMouseoverSquare: onMouseoverSquare,
+        onSnapEnd: onSnapEnd,
+        pieceTheme: '/img/chesspieces/wikipedia/{piece}.png'
+    };
+    board = Chessboard('myBoard', config)
+});
 
 const evtSource = new EventSource(apiUrl + gameUrl.split('/')[2] + "/events");
 
 evtSource.onmessage = (event) => {
-  console.log(event.data);
+    board.position(event.data);
+    game.load(event.data);
 };
 
-document.addEventListener("DOMContentLoaded", function() {
-    board = Chessboard('myBoard', config)
-});

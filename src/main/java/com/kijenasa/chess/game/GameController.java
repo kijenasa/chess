@@ -1,5 +1,7 @@
 package com.kijenasa.chess.game;
 
+import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.game.GameContext;
 import com.kijenasa.chess.Move.MoveWrapper;
 import com.kijenasa.chess.Player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.net.URI;
-import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,10 +33,7 @@ public class GameController {
     @PostMapping("/{gameUuid}/move")
     @ResponseBody
     public boolean makeMove(@PathVariable UUID gameUuid, @RequestParam UUID playerUuid, @RequestBody MoveWrapper move) {
-        // TODO player verification logic & move legality checking in the gameService
-        System.out.println(move.getMove().toString());
-        gameService.move(gameUuid, move);
-        return true;
+        return gameService.move(gameUuid, playerUuid, move);
     }
 
     @GetMapping("/{gameUuid}/events")

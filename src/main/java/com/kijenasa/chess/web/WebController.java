@@ -23,7 +23,8 @@ public class WebController {
     @GetMapping("/game/{uuid}")
     public String game(@PathVariable UUID uuid, Model model) {
         Optional<Game> game =  gameService.getGameByUuid(uuid);
-        game.ifPresent(value -> model.addAttribute("fen", value.getBoard().getFen()));
+        String fen = game.map(value -> value.getBoard().getFen()).orElse("start");
+        model.addAttribute("fen", fen);
         return "game";
     }
 }
