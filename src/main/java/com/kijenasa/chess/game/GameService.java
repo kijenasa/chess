@@ -1,6 +1,9 @@
 package com.kijenasa.chess.game;
 
+import com.github.bhlangonijr.chesslib.BoardEventType;
+import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.Side;
+import com.github.bhlangonijr.chesslib.Square;
 import com.kijenasa.chess.Move.MoveWrapper;
 import com.kijenasa.chess.Player.Player;
 import org.springframework.stereotype.Service;
@@ -56,8 +59,8 @@ public class GameService {
 
         Game game = getGameByUuid(gameUuid).get();
         // If move is legal AND player exists AND its players turn
-        if(game.getBoard().isMoveLegal(move.getMove(), true) && getSideByUuid(gameUuid, playerUuid).isPresent() && game.getBoard().getSideToMove().equals(getSideByUuid(gameUuid, playerUuid).get())) {
-            game.getBoard().doMove(move.getMove());
+        if(game.getBoard().isMoveLegal(move.getMove(game.getBoard()), false) && getSideByUuid(gameUuid, playerUuid).isPresent() && game.getBoard().getSideToMove().equals(getSideByUuid(gameUuid, playerUuid).get())) {
+            game.getBoard().doMove(move.getMove(game.getBoard()));
             game.setMove(move);
             gameRepository.save(game);
             broadcastPosition(gameUuid);

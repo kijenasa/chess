@@ -1,6 +1,9 @@
 package com.kijenasa.chess.Move;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.Piece;
+import com.github.bhlangonijr.chesslib.Rank;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 
@@ -35,8 +38,16 @@ public class MoveWrapper {
     }
 
     @JsonIgnore
-    public Move getMove() {
-        return new Move(from, to);
+    public Move getMove(Board board) {
+        Piece promotionPiece = Piece.NONE;
+        if(board.getPiece(from) == Piece.WHITE_PAWN || board.getPiece(from) == Piece.BLACK_PAWN) {
+            if (to.getRank() == Rank.RANK_8) {
+                promotionPiece = Piece.WHITE_QUEEN;
+            } else if (to.getRank() == Rank.RANK_1) {
+                promotionPiece = Piece.BLACK_QUEEN;
+            }
+        }
+        return new Move(from, to, promotionPiece);
     }
 
     @Override

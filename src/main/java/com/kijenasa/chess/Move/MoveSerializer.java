@@ -3,6 +3,7 @@ package com.kijenasa.chess.Move;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.move.Move;
 import org.springframework.boot.jackson.JsonComponent;
 
@@ -15,8 +16,8 @@ public class MoveSerializer {
         @Override
         public void serialize(MoveWrapper move, JsonGenerator jgen, SerializerProvider serializers) throws IOException {
             jgen.writeStartObject();
-            jgen.writeStringField("from", move.getMove().getFrom().toString());
-            jgen.writeStringField("to", move.getMove().getTo().toString());
+            jgen.writeStringField("from", move.getMove(new Board()).getFrom().toString());
+            jgen.writeStringField("to", move.getMove(new Board()).getTo().toString());
             jgen.writeEndObject();
         }
 
