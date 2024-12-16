@@ -9,6 +9,29 @@ var apiUrl = "/api/game/";
 var side;
 var uuid;
 
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  let expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=" + gameUrl;
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 function sendPost(url, data) {
   return new Promise ((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -25,7 +48,6 @@ function sendPost(url, data) {
 }
 
 function sendGet(url) {
-    console.log("sending get to: " + url)
     return new Promise ((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", url);
@@ -38,23 +60,6 @@ function sendGet(url) {
         xhr.send();
     })
 }
-
-sendPost(apiUrl + gameUrl.split('/')[2] + "/join", null)
-    .then(response => {
-    if(response === null) {
-        config.log("Game is full");
-    } else {
-        responseJson = JSON.parse(response);
-        uuid = responseJson.uuid;
-        if (responseJson.side === "WHITE") {
-            side = 'w';
-        } else if (responseJson.side === "BLACK") {
-            side = 'b';
-        }
-        console.log(uuid);
-        console.log(side);
-        }
-    })
 
 function removeGreySquares() {
   $('#myBoard .square-55d63').css('background', '')
@@ -90,7 +95,6 @@ function onDrop(source, target) {
         to: target,
         promotion: 'q' // NOTE: always promote to a queen for example simplicity
     })
-    console.log("moved " + move);
 
     if(move) {
         var result = {
@@ -101,7 +105,6 @@ function onDrop(source, target) {
         sendPost(apiUrl + gameUrl.split('/')[2] + "/move?playerUuid=" + uuid, result)
         .then(response => {
 
-            console.log("sending move " + move + " to " + apiUrl + gameUrl.split('/')[2] + "/move")
             if(response === false) {
                 return 'snapback'
             }
@@ -143,7 +146,28 @@ function onSnapEnd() {
   board.position(game.fen())
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+async function initializeGame() {
+    if(getCookie("uuid") === "") {
+        const response = await sendPost(apiUrl + gameUrl.split('/')[2] + "/join", null);
+        if(response === null) {
+            alert("Game is full");
+        } else {
+            responseJson = JSON.parse(response);
+            uuid = responseJson.uuid;
+            if (responseJson.side === "WHITE") {
+                side = 'w';
+            } else if (responseJson.side === "BLACK") {
+                side = 'b';
+            }
+        }
+
+        setCookie("uuid", uuid, 7);
+        setCookie("side", side, 7);
+    } else {
+        uuid = getCookie("uuid");
+        side = getCookie("side");
+    }
+
     var config = {
         draggable: true,
         position: fen,
@@ -155,12 +179,12 @@ document.addEventListener("DOMContentLoaded", function() {
         pieceTheme: '/img/chesspieces/wikipedia/{piece}.png'
     };
     board = Chessboard('myBoard', config)
-});
 
-const evtSource = new EventSource(apiUrl + gameUrl.split('/')[2] + "/events");
+    const evtSource = new EventSource(apiUrl + gameUrl.split('/')[2] + "/events");
+    evtSource.onmessage = (event) => {
+        board.position(event.data);
+        game.load(event.data);
+    };
+}
 
-evtSource.onmessage = (event) => {
-    board.position(event.data);
-    game.load(event.data);
-};
-
+document.addEventListener("DOMContentLoaded", initializeGame);
