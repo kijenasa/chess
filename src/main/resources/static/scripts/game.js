@@ -154,11 +154,7 @@ async function initializeGame() {
         } else {
             responseJson = JSON.parse(response);
             uuid = responseJson.uuid;
-            if (responseJson.side === "WHITE") {
-                side = 'w';
-            } else if (responseJson.side === "BLACK") {
-                side = 'b';
-            }
+            side = responseJson.side === "WHITE" ? 'w' : 'b';
         }
 
         setCookie("uuid", uuid, 7);
@@ -168,9 +164,11 @@ async function initializeGame() {
         side = getCookie("side");
     }
 
+    console.log(fen);
     var config = {
         draggable: true,
         position: fen,
+        orientation: side == 'w' ? 'white' : 'black',
         onDragStart: onDragStart,
         onDrop: onDrop,
         onMouseoutSquare: onMouseoutSquare,
@@ -178,7 +176,8 @@ async function initializeGame() {
         onSnapEnd: onSnapEnd,
         pieceTheme: '/img/chesspieces/wikipedia/{piece}.png'
     };
-    board = Chessboard('myBoard', config)
+    board = Chessboard('myBoard', config);
+    game.load(fen);
 
     const evtSource = new EventSource(apiUrl + gameUrl.split('/')[2] + "/events");
     evtSource.onmessage = (event) => {
