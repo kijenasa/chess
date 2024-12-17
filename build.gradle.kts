@@ -21,14 +21,15 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("com.github.bhlangonijr:chesslib:1.3.4")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.4.0")
 	implementation("io.projectreactor:reactor-core:3.7.1")
-	implementation("io.github.cdimascio:dotenv-java:3.1.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.xerial:sqlite-jdbc:3.25.2")
+	implementation("org.hibernate.orm:hibernate-community-dialects")
 }
 
 tasks.withType<Test> {

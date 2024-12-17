@@ -32,10 +32,6 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public Optional<Game> getGameById(long id) {
-        return gameRepository.findGameById(id);
-    }
-
     public Optional<Game> getGameByUuid(UUID uuid) {
         return gameRepository.findGameByUuid(uuid);
     }

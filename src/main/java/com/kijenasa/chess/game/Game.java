@@ -18,16 +18,6 @@ import java.util.UUID;
 @Table
 public class Game {
     @Id
-    @SequenceGenerator(
-            name = "game_sequence",
-            sequenceName = "game_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "game_sequence"
-    )
-    private Long id; // todo: get rid of
     @JsonIgnore
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 100)
@@ -58,14 +48,6 @@ public class Game {
     public Game(Board board) {
         this.board = board;
         uuid = UUID.randomUUID();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public UUID getUuid() {
@@ -111,8 +93,7 @@ public class Game {
     @Override
     public String toString() {
         return "Game{" +
-                "id=" + id +
-                ", uuid=" + uuid +
+                "uuid=" + uuid +
                 ", board=" + board +
                 ", recentMove=" + recentMove +
                 ", whiteUuid=" + white +
