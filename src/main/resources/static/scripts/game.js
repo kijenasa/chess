@@ -9,10 +9,6 @@ var apiUrl = "/api/game/";
 var side;
 var uuid;
 
-function copyInvite() {
-  navigator.clipboard.writeText(window.location.href);
-}
-
 function setCookie(cname, cvalue, exdays) {
   const d = new Date();
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -188,6 +184,10 @@ async function initializeGame() {
         board.position(event.data);
         game.load(event.data);
     };
+}
+
+function copyInvite() {
+  navigator.clipboard.writeText(window.location.href);
 }
 
 document.addEventListener("DOMContentLoaded", initializeGame);
