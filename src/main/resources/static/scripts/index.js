@@ -22,7 +22,7 @@ function sendPost(url, data, callback) {
 }
 
 function createGame() {
-    sendPost("http://localhost:8080/api/game", null, function(xhr) {
+    sendPost("/api/game", null, function(xhr) {
         window.location.href = xhr.getResponseHeader("Location");
     });
 }
